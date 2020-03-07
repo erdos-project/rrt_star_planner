@@ -9,6 +9,14 @@ The base RRT code is inspired by [sourishg/rrt-simulator](https://github.com/sou
 
 Reference Paper:
 [Sampling-based Algorithms for Optimal Motion Planning](https://arxiv.org/pdf/1105.1186.pdf)
+## Profiling
+Some basic profiling of the code (80 meter x 10 meter search space, 10 obstacles) indicates the following expected performance:
+```
+Average Time (success): ~6 ms
+Max Time (success): ~60 ms
+Failure Case (Running all 2000 iterations): <250 ms
+```
+
 ## Setup
 ```
 git clone https://github.com/fangedward/rrt-star-planning.git
