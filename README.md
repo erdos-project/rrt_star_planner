@@ -1,4 +1,5 @@
 # RRT*
+![RRT* Demo](img/rrtstar.gif)
 ## Overview
 This repository contains a fast, C++ implementation of the RRT* algorithm 
 with a Python wrapper. It is used as one of the motion planning models in 
