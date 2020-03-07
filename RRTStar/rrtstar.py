@@ -19,7 +19,7 @@ def main():
 
     conds = {'wx': [150.0],
              'wy': [195.0],
-             'obstacle_list': [[134., 194., 136., 196.]],
+             'obstacle_list': [10 * [134., 194., 136., 196.]],
              'x': 120.0,
              'y': 195.0,
              }  # paste output from debug log
@@ -35,7 +35,7 @@ def main():
 
     # obstacle lists
     obs = np.array(conds['obstacle_list'])
-
+    total_time_taken = 0
     for i in range(sim_loop):
         print("Iteration: {}".format(i))
         start_time = time.time()
@@ -48,6 +48,7 @@ def main():
         else:
             print("Failed")
         end_time = time.time() - start_time
+        total_time_taken += end_time
         print("Time taken: {}".format(end_time))
 
         if np.hypot(result_x[1] - wx[-1], result_y[1] - wy[-1]) <= 2.0:
@@ -77,6 +78,7 @@ def main():
             plt.pause(0.1)
 
     print("Finish")
+    print("Average time per iteration: {}".format(total_time_taken/i))
     if show_animation:  # pragma: no cover
         plt.grid(True)
         plt.pause(1)
