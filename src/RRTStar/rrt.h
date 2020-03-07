@@ -2,6 +2,7 @@
 #define RRT_H
 
 #include "obstacles.h"
+
 #include <stdlib.h>
 #include <vector>
 #include <math.h>

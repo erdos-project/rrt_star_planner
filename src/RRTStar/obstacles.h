@@ -1,12 +1,13 @@
 #ifndef OBSTACLES_H
 #define OBSTACLES_H
 
+#include "src/constants.h"
+
 #include <QDebug>
 #include <QLine>
 #include <vector>
 #include <eigen3/Eigen/Dense>
 #include <assert.h>
-#include "src/constants.h"
 
 using namespace Eigen;
 using namespace std;

@@ -1,4 +1,5 @@
 #include "rrt.h"
+
 #include <algorithm>
 #include <vector>
 

@@ -1,7 +1,5 @@
 #!/bin/bash
-sudo apt-get install build-essential
-sudo apt-get install qtcreator
-sudo apt-get install qt5-default
+sudo apt-get install build-essential qtcreator qt5-default libeigen3-dev clang cmake
 if [ ! -d "build" ]; then
   mkdir build
 fi

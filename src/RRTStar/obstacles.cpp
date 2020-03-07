@@ -1,5 +1,7 @@
 #include "obstacles.h"
+
 #include <iostream>
+
 Obstacles::Obstacles()
 {
 }
