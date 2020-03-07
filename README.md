@@ -4,8 +4,7 @@ This repository contains a fast, C++ implementation of the RRT* algorithm
 with a Python wrapper. It is used as one of the motion planning models in 
 [pylot](https://github.com/erdos-project/pylot), an [erdos](https://github.com/erdos-project) project. 
 
-The base RRT code is inspired by [sourishg/rrt-simulator](https://github.com
-/sourishg/rrt-simulator), which implements RRT.
+The base RRT code is inspired by [sourishg/rrt-simulator](https://github.com/sourishg/rrt-simulator), which implements RRT.
 
 [Sampling-based Algorithms for Optimal Motion Planning](https://arxiv.org/pdf/1105.1186.pdf)
 ## Setup
