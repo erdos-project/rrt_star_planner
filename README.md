@@ -6,6 +6,7 @@ with a Python wrapper. It is used as one of the motion planning models in
 
 The base RRT code is inspired by [sourishg/rrt-simulator](https://github.com/sourishg/rrt-simulator), which implements RRT.
 
+Reference Paper:
 [Sampling-based Algorithms for Optimal Motion Planning](https://arxiv.org/pdf/1105.1186.pdf)
 ## Setup
 ```
