@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(RRTSim)
+project(RRTStar)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
@@ -24,7 +24,4 @@ include_directories(
 )
 add_library(RRTStar SHARED src/RRTStar/obstacles.cpp src/RRTStar/rrt.cpp
         src/RRTStar/RRTStarWrapper.cpp)
-add_executable(RRTStarTest src/main.cpp src/UI/mainwindow.cpp
-        src/RRTStar/obstacles.cpp src/UI/renderarea.cpp src/RRTStar/rrt.cpp)
 target_link_libraries(RRTStar Qt5::Widgets Qt5::Gui)
-target_link_libraries(RRTStarTest Qt5::Widgets Qt5::Gui)
