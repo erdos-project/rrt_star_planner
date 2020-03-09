@@ -28,7 +28,8 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
         end (np.ndarray): [x, y]
         step_size (float): distance to sample new points
         max_iterations (int): maximum number of iterations to run
-        obs (np.ndarray): [llx, lly, urx, ury]
+        obs (np.ndarray): top-down obstacles formatted as follows
+            [lower left x, lower left y, upper right x, upper right y]
 
     Returns:
         result_x (list(float)): x positions of rrt* path, if it exists
