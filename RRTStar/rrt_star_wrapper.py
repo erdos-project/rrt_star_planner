@@ -32,9 +32,10 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
             [lower left x, lower left y, upper right x, upper right y]
 
     Returns:
-        result_x (list(float)): x positions of rrt* path, if it exists
-        result_y (list(float)): y positions of rrt* path, if it exists
-        success (bool): whether rrt* found a path or not
+        (success, (result_x, result_y)) (tuple):
+            succes (bool): whether rrt* found a path or not
+            result_x (list(float)): x positions of rrt* path, if it exists
+            result_y (list(float)): y positions of rrt* path, if it exists
     """
     result_x = np.zeros(100)
     result_y = np.zeros(100)
@@ -54,4 +55,4 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
     if success and np.any(np.isnan(result_x)):
         ind = np.where(np.isnan(result_x))[0][0]
 
-    return result_x[:ind], result_y[:ind], success
+    return (success, (result_x[:ind], result_y[:ind]))

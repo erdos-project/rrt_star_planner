@@ -39,7 +39,7 @@ def main():
     for i in range(sim_loop):
         print("Iteration: {}".format(i))
         start_time = time.time()
-        result_x, result_y, success = \
+        success, (result_x, result_y) = \
             rrt_star_wrapper.apply_rrt_star([x, y], wp[-1], 1,
                                            2000, obs)
         if success == 1:
