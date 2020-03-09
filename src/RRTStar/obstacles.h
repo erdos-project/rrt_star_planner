@@ -1,24 +1,21 @@
 #ifndef OBSTACLES_H
 #define OBSTACLES_H
 
-#include "src/constants.h"
-
+#include <cassert>
+#include <vector>
 #include <QDebug>
 #include <QLine>
-#include <vector>
 #include <eigen3/Eigen/Dense>
-#include <assert.h>
 
-using namespace Eigen;
-using namespace std;
+#include "src/constants.h"
 
 class Obstacles
 {
 public:
-    Obstacles();
-    void addObstacle(Vector2f firstPoint, Vector2f secondPoint);
-    bool isSegmentInObstacle(Vector2f &p1, Vector2f &p2);
-    vector<pair<Vector2f, Vector2f>> obstacles;
+    Obstacles() = default;
+    void addObstacle(Eigen::Vector2f firstPoint, Eigen::Vector2f secondPoint);
+    bool isSegmentInObstacle(Eigen::Vector2f &p1, Eigen::Vector2f &p2);
+    std::vector<std::pair<Eigen::Vector2f, Eigen::Vector2f>> obstacles;
 };
 
 #endif // OBSTACLES_H

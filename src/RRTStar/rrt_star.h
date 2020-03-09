@@ -1,11 +1,11 @@
 #ifndef RRT_H
 #define RRT_H
 
-#include "obstacles.h"
-
-#include <stdlib.h>
+#include <cstdlib>
 #include <vector>
-#include <math.h>
+#include <cmath>
+
+#include "obstacles.h"
 
 using namespace std;
 using namespace Eigen;
@@ -26,7 +26,7 @@ public:
     Node *root, *lastNode;
     Vector2f startPos, endPos, origin, bounds;
     int max_iter;
-    int step_size;
+    double step_size;
     RRT();
     ~RRT();
     void initialize();
@@ -41,7 +41,7 @@ public:
     Node* nearest(Vector2f point);
     void nearestNeighbors(Vector2f point);
     void add(Node *qNearest, Node *qNew, double cost);
-    void relink(Node *q, Node* qNew, double dist);
+    static void relink(Node *q, Node* qNew, double dist);
     static double distance(Vector2f &p, Vector2f &q);
     bool isSegmentInObstacle(Vector2f &p1, Vector2f &p2);
     double getFreeArea();

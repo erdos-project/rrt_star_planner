@@ -1,6 +1,7 @@
 #include "rrt_star.h"
 
 #include <algorithm>
+#include <utility>
 #include <vector>
 
 RRT::RRT()
@@ -8,7 +9,7 @@ RRT::RRT()
     obstacles = new Obstacles;
     setStateSpace(START_POS_X, START_POS_Y, END_POS_X, END_POS_Y);
     root = new Node;
-    root->parent = NULL;
+    root->parent = nullptr;
     root->position = startPos;
     lastNode = root;
     nodes.push_back(root);
@@ -27,7 +28,7 @@ RRT::~RRT()
 void RRT::initialize()
 {
     root = new Node;
-    root->parent = NULL;
+    root->parent = nullptr;
     root->position = startPos;
     lastNode = root;
     nodes.push_back(root);
@@ -79,7 +80,7 @@ void RRT::setEndPosition(double x, double y) {
 }
 
 void RRT::addObstacle(Vector2f firstPoint, Vector2f secondPoint) {
-    obstacles->addObstacle(firstPoint, secondPoint);
+    obstacles->addObstacle(std::move(firstPoint), std::move(secondPoint));
 }
 
 /**
@@ -88,8 +89,8 @@ void RRT::addObstacle(Vector2f firstPoint, Vector2f secondPoint) {
  */
 void RRT::deleteNodes(Node *root)
 {
-    for(int i = 0; i < (int)root->children.size(); i++) {
-        deleteNodes(root->children[i]);
+    for(auto & i : root->children) {
+        deleteNodes(i);
     }
     delete root;
 }
@@ -121,13 +122,13 @@ Node* RRT::getRandomNode()
  */
 Node* RRT::nearest(Vector2f point)
 {
-    float minDist = 1e9;
-    Node *closest = NULL;
-    for(int i = 0; i < (int)nodes.size(); i++) {
-        float dist = distance(point, nodes[i]->position);
+    double minDist = 1e9;
+    Node *closest = nullptr;
+    for(auto & node : nodes) {
+        double dist = distance(point, node->position);
         if (dist < minDist) {
             minDist = dist;
-            closest = nodes[i];
+            closest = node;
         }
     }
     return closest;
@@ -142,10 +143,10 @@ void RRT::nearestNeighbors(Vector2f point)
 {
     sort(
             nodes.begin(), nodes.end(),
-            [this, &point](Node* lhs, Node* rhs)
+            [&point](Node* lhs, Node* rhs)
             {
-                return this->distance(point, lhs->position) <
-                       this->distance(point,rhs->position);
+                return RRT::distance(point, lhs->position) <
+                       RRT::distance(point,rhs->position);
             }
     );
 }
@@ -224,7 +225,7 @@ void RRT::add(Node *qNearest, Node *qNew, double dist)
 void RRT::relink(Node *q, Node *qNew, double dist)
 {
     // set the parent of q to qNew
-    if (q->parent != NULL) {
+    if (q->parent != nullptr) {
         for (int i = 0; i < (int) q->parent->children.size(); i++) {
             if (q->parent->children[i] == q) {
                 q->parent->children.erase(q->parent->children.begin() + i);
