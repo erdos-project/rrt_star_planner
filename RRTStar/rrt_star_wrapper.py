@@ -1,8 +1,16 @@
 import ctypes
 import numpy as np
+import os
+
 from ctypes import c_double, c_int
 
-cdll = ctypes.CDLL("build/libRRTStar.so")
+try:
+    cdll = ctypes.CDLL("build/libRRTStar.so")
+except:
+    cdll = ctypes.CDLL(
+        "{}/pylot/planning/rrt_star/rrt-star-planning/"
+        "build/libRRTStar.so".format(os.getcwd())
+    )
 _c_double_p = ctypes.POINTER(c_double)
 _apply_rrt_star = cdll.ApplyRRTStar
 _apply_rrt_star.argtypes = (

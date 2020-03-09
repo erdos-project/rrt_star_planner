@@ -1,4 +1,4 @@
-#include "src/RRTStar/rrt.h"
+#include "src/RRTStar/rrt_star.h"
 
 #include <algorithm>
 #include <eigen3/Eigen/Dense>

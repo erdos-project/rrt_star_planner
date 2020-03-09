@@ -1,4 +1,4 @@
-import rrtstar_wrapper
+import rrt_star_wrapper
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -40,7 +40,7 @@ def main():
         print("Iteration: {}".format(i))
         start_time = time.time()
         result_x, result_y, success = \
-            rrtstar_wrapper.apply_rrt_star([x, y], wp[-1], 1,
+            rrt_star_wrapper.apply_rrt_star([x, y], wp[-1], 1,
                                            2000, obs)
         if success == 1:
             x = result_x[1]
