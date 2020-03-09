@@ -13,7 +13,7 @@ class Obstacles
 {
 public:
     Obstacles() = default;
-    void addObstacle(Eigen::Vector2f firstPoint, Eigen::Vector2f secondPoint);
+    void addObstacle(Eigen::Vector2f first_point, Eigen::Vector2f second_point);
     bool isSegmentInObstacle(Eigen::Vector2f &p1, Eigen::Vector2f &p2);
     std::vector<std::pair<Eigen::Vector2f, Eigen::Vector2f>> obstacles;
 };

@@ -135,13 +135,13 @@ extern "C" {
         Node *q;
 
         if (reached) {
-            q = rrt->lastNode;
+            q = rrt->last_node;
         }
         else
         {
             // if not reached yet, then shortestPath will start from the closest
             // node to end point.
-            q = rrt->nearest(rrt->endPos);
+            q = rrt->nearest(rrt->end_pos);
         }
         // generate shortest path to destination.
         while (q != NULL) {

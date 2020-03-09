@@ -23,8 +23,8 @@ public:
     Obstacles *obstacles;
     vector<Node *> nodes;
     vector<Node *> path;
-    Node *root, *lastNode;
-    Vector2f startPos, endPos, origin, bounds;
+    Node *root, *last_node;
+    Vector2f start_pos, end_pos, origin, bounds;
     int max_iter;
     double step_size;
     RRT();
@@ -35,17 +35,17 @@ public:
     void setMaxIterations(int iter);
     void setStartPosition(double x, double y);
     void setEndPosition(double x, double y);
-    void setStateSpace(double xStart, double yStart, double xEnd, double yEnd);
-    void addObstacle(Vector2f firstPoint, Vector2f secondPoint);
+    void setStateSpace(double x_start, double y_start, double x_end, double y_end);
+    void addObstacle(Vector2f first_point, Vector2f second_point);
     Node* getRandomNode();
     Node* nearest(Vector2f point);
     void nearestNeighbors(Vector2f point);
-    void add(Node *qNearest, Node *qNew, double cost);
-    static void relink(Node *q, Node* qNew, double dist);
+    void add(Node *q_nearest, Node *q_new, double cost);
+    static void relink(Node *q, Node* q_new, double dist);
     static double distance(Vector2f &p, Vector2f &q);
     bool isSegmentInObstacle(Vector2f &p1, Vector2f &p2);
     double getFreeArea();
-    Vector2f newConfig(Node *q, Node *qNearest);
+    Vector2f newConfig(Node *q, Node *q_nearest);
     bool reached();
 private:
     static void deleteNodes(Node *root);

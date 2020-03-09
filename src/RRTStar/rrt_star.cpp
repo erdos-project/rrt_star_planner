@@ -10,8 +10,8 @@ RRT::RRT()
     setStateSpace(START_POS_X, START_POS_Y, END_POS_X, END_POS_Y);
     root = new Node;
     root->parent = nullptr;
-    root->position = startPos;
-    lastNode = root;
+    root->position = start_pos;
+    last_node = root;
     nodes.push_back(root);
     step_size = 0.5;
     max_iter = 5000;
@@ -29,8 +29,8 @@ void RRT::initialize()
 {
     root = new Node;
     root->parent = nullptr;
-    root->position = startPos;
-    lastNode = root;
+    root->position = start_pos;
+    last_node = root;
     nodes.push_back(root);
 }
 
@@ -59,28 +59,28 @@ void RRT::setMaxIterations(int iter)
 }
 
 void RRT::setStartPosition(double x, double y) {
-    startPos.x() = x;
-    startPos.y() = y;
+    start_pos.x() = x;
+    start_pos.y() = y;
 }
 
-void RRT::setStateSpace(double xStart, double yStart, double xEnd, double yEnd) {
-    setStartPosition(xStart, yStart);
-    setEndPosition(xEnd, yEnd);
+void RRT::setStateSpace(double x_start, double y_start, double x_end, double y_end) {
+    setStartPosition(x_start, y_start);
+    setEndPosition(x_end, y_end);
     // State space calculated as minimum bounding rectangle with buffer
     // origin is lower left corner, bounds is width, heigh
-    origin.x() = min(startPos.x(), endPos.x()) - LANE_WIDTH;
-    origin.y() = min(startPos.y(), endPos.y()) - LANE_WIDTH;
-    bounds.x() = max(startPos.x(), endPos.x()) - origin.x() + LANE_WIDTH;
-    bounds.y() = max(startPos.y(), endPos.y()) - origin.y() + LANE_WIDTH;
+    origin.x() = min(start_pos.x(), end_pos.x()) - LANE_WIDTH;
+    origin.y() = min(start_pos.y(), end_pos.y()) - LANE_WIDTH;
+    bounds.x() = max(start_pos.x(), end_pos.x()) - origin.x() + LANE_WIDTH;
+    bounds.y() = max(start_pos.y(), end_pos.y()) - origin.y() + LANE_WIDTH;
 }
 
 void RRT::setEndPosition(double x, double y) {
-    endPos.x() = x;
-    endPos.y() = y;
+    end_pos.x() = x;
+    end_pos.y() = y;
 }
 
-void RRT::addObstacle(Vector2f firstPoint, Vector2f secondPoint) {
-    obstacles->addObstacle(std::move(firstPoint), std::move(secondPoint));
+void RRT::addObstacle(Vector2f first_point, Vector2f second_point) {
+    obstacles->addObstacle(std::move(first_point), std::move(second_point));
 }
 
 /**
@@ -105,7 +105,7 @@ Node* RRT::getRandomNode()
     Node* ret;
     if (drand48() <= 0.1) {
         ret = new Node;
-        ret->position = endPos;
+        ret->position = end_pos;
     } else {
         Vector2f point(drand48() * bounds.x(),
                        drand48() * bounds.y());
@@ -122,12 +122,12 @@ Node* RRT::getRandomNode()
  */
 Node* RRT::nearest(Vector2f point)
 {
-    double minDist = 1e9;
+    double min_dist = 1e9;
     Node *closest = nullptr;
     for(auto & node : nodes) {
         double dist = distance(point, node->position);
-        if (dist < minDist) {
-            minDist = dist;
+        if (dist < min_dist) {
+            min_dist = dist;
             closest = node;
         }
     }
@@ -174,28 +174,28 @@ bool RRT::isSegmentInObstacle(Vector2f &p1, Vector2f &p2) {
  */
 double RRT::getFreeArea()
 {
-    double spaceArea = bounds.x() * bounds.y();
+    double space_area = bounds.x() * bounds.y();
     double width, length;
-    double obstacleArea = 0;
+    double obstacle_area = 0;
     for (auto obstacle : obstacles->obstacles) {
         // top right x - bottom right x
         width = obstacle.second[0] - obstacle.first[0];
         length = obstacle.second[1] - obstacle.first[1];
-        obstacleArea += width * length;
+        obstacle_area += width * length;
     }
-    return spaceArea - obstacleArea;
+    return space_area - obstacle_area;
 }
 
 /**
  * @brief Find a configuration at a distance step_size from nearest node to random node.
  * @param q
- * @param qNearest
+ * @param q_nearest
  * @return
  */
-Vector2f RRT::newConfig(Node *q, Node *qNearest)
+Vector2f RRT::newConfig(Node *q, Node *q_nearest)
 {
     Vector2f to = q->position;
-    Vector2f from = qNearest->position;
+    Vector2f from = q_nearest->position;
     Vector2f intermediate = to - from;
     intermediate = intermediate / intermediate.norm();
     Vector2f ret = from + step_size * intermediate;
@@ -204,27 +204,27 @@ Vector2f RRT::newConfig(Node *q, Node *qNearest)
 
 /**
  * @brief Add a node to the tree.
- * @param qNearest
- * @param qNew
+ * @param q_nearest
+ * @param q_new
  */
-void RRT::add(Node *qNearest, Node *qNew, double dist)
+void RRT::add(Node *q_nearest, Node *q_new, double dist)
 {
-    qNew->dist = dist;
-    qNew->parent = qNearest;
-    qNearest->children.push_back(qNew);
-    nodes.push_back(qNew);
-    lastNode = qNew;
+    q_new->dist = dist;
+    q_new->parent = q_nearest;
+    q_nearest->children.push_back(q_new);
+    nodes.push_back(q_new);
+    last_node = q_new;
 }
 
 /**
- * @brief Relink q to have parent qNew.
+ * @brief Relink q to have parent q_new.
  * @param q
- * @param qNew
+ * @param q_new
  * @param dist
  */
-void RRT::relink(Node *q, Node *qNew, double dist)
+void RRT::relink(Node *q, Node *q_new, double dist)
 {
-    // set the parent of q to qNew
+    // set the parent of q to q_new
     if (q->parent != nullptr) {
         for (int i = 0; i < (int) q->parent->children.size(); i++) {
             if (q->parent->children[i] == q) {
@@ -234,8 +234,8 @@ void RRT::relink(Node *q, Node *qNew, double dist)
         }
     }
     q->dist = dist;
-    q->parent = qNew;
-    qNew->children.push_back(q);
+    q->parent = q_new;
+    q_new->children.push_back(q);
 }
 
 
@@ -245,6 +245,6 @@ void RRT::relink(Node *q, Node *qNew, double dist)
  */
 bool RRT::reached()
 {
-    return distance(lastNode->position, endPos) < END_DIST_THRESHOLD;
+    return distance(last_node->position, end_pos) < END_DIST_THRESHOLD;
 }
 
