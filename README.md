@@ -19,7 +19,7 @@ Failure Case (Running all 2000 iterations): <250 ms
 
 ## Setup
 ```
-git clone https://github.com/fangedward/rrt-star-planning.git
+git clone https://github.com/erdos-project/rrt-star-planning.git
 ./build.sh
 ```
 
