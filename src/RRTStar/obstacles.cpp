@@ -6,7 +6,8 @@ using namespace std;
 using namespace Eigen;
 
 /**
- * @brief Obstacles are stored as rectangles. Rectangle is denoted by two points : topLeft and bottomRight.
+ * @brief Obstacles are stored as rectangles. Rectangle is denoted by two
+ * points : topLeft and bottomRight in top down world coordinates.
  * @param first_point
  * @param second_point
  */
