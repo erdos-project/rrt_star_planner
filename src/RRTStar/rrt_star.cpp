@@ -6,7 +6,6 @@
 
 RRT::RRT()
 {
-    obstacles = new Obstacles;
     setStateSpace(START_POS_X, START_POS_Y, END_POS_X, END_POS_Y);
     root = new Node;
     root->parent = nullptr;
@@ -39,8 +38,11 @@ void RRT::initialize()
  */
 void RRT::reset()
 {
-    obstacles->obstacles.clear();
-    obstacles->obstacles.resize(0);
+    for (auto obstacle : obstacles) {
+        delete obstacle;
+    }
+    obstacles.clear();
+    obstacles.resize(0);
     deleteNodes(root);
     nodes.clear();
     nodes.resize(0);
@@ -80,7 +82,8 @@ void RRT::setEndPosition(double x, double y) {
 }
 
 void RRT::addObstacle(Vector2f first_point, Vector2f second_point) {
-    obstacles->addObstacle(std::move(first_point), std::move(second_point));
+    obstacles.push_back(new Obstacle(std::move(first_point), std::move
+    (second_point)));
 }
 
 /**
@@ -122,7 +125,7 @@ Node* RRT::getRandomNode()
  */
 Node* RRT::nearest(Vector2f point)
 {
-    double min_dist = 1e9;
+    double min_dist = INFINITY;
     Node *closest = nullptr;
     for(auto & node : nodes) {
         double dist = distance(point, node->position);
@@ -165,8 +168,11 @@ double RRT::distance(Vector2f &p, Vector2f &q)
 /**
  * @brief Return whether the given line segment intersects an obstacle
  */
-bool RRT::isSegmentInObstacle(Vector2f &p1, Vector2f &p2) {
-    return obstacles->isSegmentInObstacle(p1, p2);
+bool RRT::isSegmentInObstacles(Vector2f &p1, Vector2f &p2) {
+    for (auto obstacle : obstacles) {
+        if (obstacle->isSegmentInObstacle(p1, p2)) return true;
+    }
+    return false;
 }
 
 /**
@@ -175,13 +181,9 @@ bool RRT::isSegmentInObstacle(Vector2f &p1, Vector2f &p2) {
 double RRT::getFreeArea()
 {
     double space_area = bounds.x() * bounds.y();
-    double width, length;
     double obstacle_area = 0;
-    for (auto obstacle : obstacles->obstacles) {
-        // top right x - bottom right x
-        width = obstacle.second[0] - obstacle.first[0];
-        length = obstacle.second[1] - obstacle.first[1];
-        obstacle_area += width * length;
+    for (auto obstacle : obstacles) {
+        obstacle_area += obstacle->getArea();
     }
     return space_area - obstacle_area;
 }

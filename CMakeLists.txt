@@ -22,6 +22,6 @@ endif()
 include_directories(
   ${CUSTOM_EIGEN}
 )
-add_library(RRTStar SHARED src/RRTStar/obstacles.cpp src/RRTStar/rrt_star.cpp
-        src/RRTStar/RRTStarWrapper.cpp)
+add_library(RRTStar SHARED src/RRTStar/rrt_star.cpp
+        src/RRTStar/RRTStarWrapper.cpp src/RRTStar/obstacle.cpp src/RRTStar/obstacle.h)
 target_link_libraries(RRTStar Qt5::Widgets Qt5::Gui)

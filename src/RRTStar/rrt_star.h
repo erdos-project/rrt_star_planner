@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 
-#include "obstacles.h"
+#include "obstacle.h"
 
 using namespace std;
 using namespace Eigen;
@@ -20,7 +20,7 @@ struct Node {
 class RRT
 {
 public:
-    Obstacles *obstacles;
+    vector<Obstacle *> obstacles;
     vector<Node *> nodes;
     vector<Node *> path;
     Node *root, *last_node;
@@ -43,7 +43,7 @@ public:
     void add(Node *q_nearest, Node *q_new, double cost);
     static void relink(Node *q, Node* q_new, double dist);
     static double distance(Vector2f &p, Vector2f &q);
-    bool isSegmentInObstacle(Vector2f &p1, Vector2f &p2);
+    bool isSegmentInObstacles(Vector2f &p1, Vector2f &p2);
     double getFreeArea();
     Vector2f newConfig(Node *q, Node *q_nearest);
     bool reached();

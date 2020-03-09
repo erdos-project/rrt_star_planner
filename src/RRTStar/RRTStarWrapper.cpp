@@ -63,7 +63,7 @@ extern "C" {
             if (rrt->distance(qNew->position, qNearest->position) >
                 rrt->step_size) {
                 Vector2f newConfig = rrt->newConfig(qNew, qNearest);
-                if (rrt->isSegmentInObstacle(newConfig, qNearest->position)) {
+                if (rrt->isSegmentInObstacles(newConfig, qNearest->position)) {
                     continue;
                 }
                 qNew = new Node;
@@ -91,8 +91,8 @@ extern "C" {
 
                 // if cost less than current lowest cost, check potential link
                 if (cost < cost_map[qBest] + distBest) {
-                    if (rrt->isSegmentInObstacle(qNew->position,
-                            node->position)) {
+                    if (rrt->isSegmentInObstacles(qNew->position,
+                                                  node->position)) {
                         continue;
                     }
                     qBest = node;
@@ -100,7 +100,7 @@ extern "C" {
                 }
             }
 
-            if (rrt->isSegmentInObstacle(qNew->position, qBest->position)) {
+            if (rrt->isSegmentInObstacles(qNew->position, qBest->position)) {
                 continue;
             }
             rrt->add(qBest, qNew, distBest);
@@ -118,8 +118,8 @@ extern "C" {
 
                 // if cost less than current lowest cost, check potential link
                 if (cost < cost_map[node]) {
-                    if (rrt->isSegmentInObstacle(qNew->position,
-                            node->position)) {
+                    if (rrt->isSegmentInObstacles(qNew->position,
+                                                  node->position)) {
                         continue;
                     }
                     rrt->relink(node, qNew, dist);
