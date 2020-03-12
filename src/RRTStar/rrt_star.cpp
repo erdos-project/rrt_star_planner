@@ -15,7 +15,16 @@ RRT::RRT(double x_start, double y_start, double x_end, double y_end,
 
 RRT::~RRT()
 {
-    reset();
+    for (auto obstacle : obstacles) {
+        delete obstacle;
+    }
+    obstacles.clear();
+    obstacles.resize(0);
+    deleteNodes(root);
+    nodes.clear();
+    nodes.resize(0);
+    path.clear();
+    path.resize(0);
 }
 
 /**
@@ -27,23 +36,6 @@ void RRT::initialize()
     root->parent = nullptr;
     last_node = root;
     nodes.push_back(root);
-}
-
-/**
- * @brief Clear the RRT and free memory.
- */
-void RRT::reset()
-{
-    for (auto obstacle : obstacles) {
-        delete obstacle;
-    }
-    obstacles.clear();
-    obstacles.resize(0);
-    deleteNodes(root);
-    nodes.clear();
-    nodes.resize(0);
-    path.clear();
-    path.resize(0);
 }
 
 void RRT::setStepSize(int step)

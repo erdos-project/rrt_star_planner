@@ -34,7 +34,6 @@ public:
         double step_dist, int max_iterations);
     ~RRT();
     void initialize();
-    void reset();
     void setStepSize(int step);
     void setMaxIterations(int iter);
     void setStartPosition(double x, double y);

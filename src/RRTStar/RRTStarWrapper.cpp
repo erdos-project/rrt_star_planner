@@ -154,7 +154,7 @@ extern "C" {
         y_path[index] = NAN;
 
         // free the memory
-        rrt->reset();
+        delete rrt;
         return reached;
     }
 }
