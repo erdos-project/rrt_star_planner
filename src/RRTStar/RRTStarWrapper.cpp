@@ -52,9 +52,10 @@ extern "C" {
         gamma = 1 + pow(2, SPACEDIM) * (1 + 1 / SPACEDIM) *
                 rrt->getFreeArea();
         for (int i = 0; i < rrt->max_iter; i++) {
+            // get a random node within the step_size radius of existing node
             q_new = rrt->getRandomNode();
             q_nearest = rrt->nearest(q_new->position);
-            if (rrt->distance(q_new->position, q_nearest->position) >
+            if (RRT::distance(q_new->position, q_nearest->position) >
                 rrt->step_size) {
                 Vector2f newConfig = rrt->newConfig(q_new, q_nearest);
                 if (rrt->isSegmentInObstacles(newConfig, q_nearest->position)) {
@@ -63,9 +64,10 @@ extern "C" {
                 q_new = new Node(newConfig);
             }
 
+            // find nearest neighbors within radius of new node
             rrt->nearestNeighbors(q_new->position);
             q_best = q_nearest;
-            dist_best = rrt->distance(q_new->position, q_nearest->position);
+            dist_best = RRT::distance(q_new->position, q_nearest->position);
             radius = min(
                 pow(gamma / PI * log(i + 1) / (i + 1), 1 / SPACEDIM),
                 (double) rrt->step_size
@@ -74,7 +76,7 @@ extern "C" {
             // look for shortest cost path to q_new
             for (auto node : rrt->nodes) {
                 // compute the cost for q_new through node
-                dist = rrt->distance(q_new->position, node->position);
+                dist = RRT::distance(q_new->position, node->position);
                 cost = cost_map[node] + dist;
 
                 // only consider proximal nodes
@@ -93,6 +95,7 @@ extern "C" {
                 }
             }
 
+            // if no collision, add to graph and update cost to new node
             if (rrt->isSegmentInObstacles(q_new->position, q_best->position)) {
                 continue;
             }
@@ -101,7 +104,7 @@ extern "C" {
 
             // rewire the tree
             for (auto node : rrt->nodes) {
-                dist = rrt->distance(q_new->position, node->position);
+                dist = RRT::distance(q_new->position, node->position);
                 cost = cost_map[node] + dist;
 
                 // only consider proximal nodes
@@ -115,7 +118,7 @@ extern "C" {
                                                   node->position)) {
                         continue;
                     }
-                    rrt->relink(node, q_new, dist);
+                    RRT::relink(node, q_new, dist);
                     cost_map[node] = cost;
                 }
             }
@@ -137,7 +140,7 @@ extern "C" {
             q = rrt->nearest(rrt->end_pos);
         }
         // generate shortest path to destination.
-        while (q != NULL) {
+        while (q != nullptr) {
             rrt->path.push_back(q);
             q = q->parent;
         }
