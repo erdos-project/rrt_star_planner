@@ -27,7 +27,8 @@ public:
     Vector2f start_pos, end_pos, origin, bounds;
     int max_iter;
     double step_size;
-    RRT();
+    RRT(double x_start, double y_start, double x_end, double y_end,
+        double step_dist, int max_iterations);
     ~RRT();
     void initialize();
     void reset();

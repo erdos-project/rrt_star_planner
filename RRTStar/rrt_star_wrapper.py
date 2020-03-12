@@ -14,7 +14,7 @@ except:
 _c_double_p = ctypes.POINTER(c_double)
 _apply_rrt_star = cdll.ApplyRRTStar
 _apply_rrt_star.argtypes = (
-    c_double, c_double, c_double, c_double, c_int, c_int, _c_double_p,
+    c_double, c_double, c_double, c_double, c_double, c_int, _c_double_p,
     _c_double_p, _c_double_p, _c_double_p, c_int, _c_double_p, _c_double_p
 )
 _apply_rrt_star.restype = c_int
@@ -41,7 +41,7 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
     result_y = np.zeros(100)
     success = _apply_rrt_star(
         c_double(start[0]), c_double(start[1]), c_double(end[0]),
-        c_double(end[1]), c_int(step_size), c_int(max_iterations),
+        c_double(end[1]), c_double(step_size), c_int(max_iterations),
         obs[:, 0].ctypes.data_as(_c_double_p),
         obs[:, 1].ctypes.data_as(_c_double_p),
         obs[:, 2].ctypes.data_as(_c_double_p),

@@ -11,31 +11,25 @@ extern "C" {
     // RRT* algorithm
     //
     // Arguments:
-    //      xStart: starting x position
-    //      yStart: starting y position
-    //      xEnd: ending x position
-    //      yEnd: ending y position
-    //      stepSize: sampling distance
-    //      maxIterations: maximum number of iterations to take
+    //      x_start: starting x position
+    //      y_start: starting y position
+    //      x_end: ending x position
+    //      y_end: ending y position
+    //      step_size: sampling distance
+    //      max_iterations: maximum number of iterations to take
     //      obstacles: list of obstacles formatted as
     //          [lower_left_x, lower_left_y, upper_right_x, upper_right_y]
     //      numObstacles: number of obstacles
     // Returns:
     //      xPath: list to store x path
     //      yPath: list to store y path
-    int ApplyRRTStar(double xStart, double yStart, double xEnd, double yEnd,
-            int stepSize, int maxIterations, double* obstacles_llx,
+    int ApplyRRTStar(double x_start, double y_start, double x_end, double y_end,
+            double step_size, int max_iterations, double* obstacles_llx,
             double* obstacles_lly, double* obstacles_urx, double* obstacles_ury,
             int numObstacles, double* xPath, double* yPath)
     {
-        RRT* rrt = new RRT;
-
-        // Initialize configuration
-        rrt->reset();
-        rrt->setStateSpace(xStart, yStart, xEnd, yEnd);
-        rrt->setStepSize(stepSize);
-        rrt->setMaxIterations(maxIterations);
-        rrt->initialize();
+        RRT* rrt = new RRT(x_start, y_start, x_end, y_end, step_size,
+                max_iterations);
 
         // Construct obstacles
         for (int i = 0; i < numObstacles; i++) {

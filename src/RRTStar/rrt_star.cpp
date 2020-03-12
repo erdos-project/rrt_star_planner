@@ -4,16 +4,13 @@
 #include <utility>
 #include <vector>
 
-RRT::RRT()
+RRT::RRT(double x_start, double y_start, double x_end, double y_end,
+         double step_dist, int max_iterations)
 {
-    setStateSpace(START_POS_X, START_POS_Y, END_POS_X, END_POS_Y);
-    root = new Node;
-    root->parent = nullptr;
-    root->position = start_pos;
-    last_node = root;
-    nodes.push_back(root);
-    step_size = 0.5;
-    max_iter = 5000;
+    setStateSpace(x_start, y_start, x_end, y_end);
+    initialize();
+    step_size = step_dist;
+    max_iter = max_iterations;
 }
 
 RRT::~RRT()
