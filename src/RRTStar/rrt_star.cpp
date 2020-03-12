@@ -1,10 +1,9 @@
 #include "rrt_star.h"
 
 #include <algorithm>
+#include <random>
 #include <utility>
 #include <vector>
-
-long RANDOM_SEED = 5;
 
 RRT::RRT(double x_start, double y_start, double x_end, double y_end,
          double step_dist, int max_iterations)
@@ -13,7 +12,6 @@ RRT::RRT(double x_start, double y_start, double x_end, double y_end,
     initialize();
     step_size = step_dist;
     max_iter = max_iterations;
-    srand48(RANDOM_SEED);
 }
 
 RRT::~RRT()
