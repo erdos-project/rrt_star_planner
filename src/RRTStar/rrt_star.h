@@ -11,6 +11,9 @@ using namespace std;
 using namespace Eigen;
 
 struct Node {
+    Node(Vector2f new_config) {
+        position = new_config;
+    };
     vector<Node *> children;
     Node *parent;
     Vector2f position;

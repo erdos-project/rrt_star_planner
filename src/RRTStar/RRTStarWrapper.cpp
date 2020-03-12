@@ -21,12 +21,12 @@ extern "C" {
     //          [lower_left_x, lower_left_y, upper_right_x, upper_right_y]
     //      numObstacles: number of obstacles
     // Returns:
-    //      xPath: list to store x path
-    //      yPath: list to store y path
+    //      x_path: list to store x path
+    //      y_path: list to store y path
     int ApplyRRTStar(double x_start, double y_start, double x_end, double y_end,
-            double step_size, int max_iterations, double* obstacles_llx,
-            double* obstacles_lly, double* obstacles_urx, double* obstacles_ury,
-            int numObstacles, double* xPath, double* yPath)
+                     double step_size, int max_iterations, double* obstacles_llx,
+                     double* obstacles_lly, double* obstacles_urx, double* obstacles_ury,
+                     int numObstacles, double* x_path, double* y_path)
     {
         RRT* rrt = new RRT(x_start, y_start, x_end, y_end, step_size,
                 max_iterations);
@@ -40,8 +40,8 @@ extern "C" {
         }
 
         // Declare variables
-        Node *qBest, *qNew, *qNearest;
-        double cost, dist, distBest, gamma, radius;
+        Node *q_best, *q_new, *q_nearest;
+        double cost, dist, dist_best, gamma, radius;
         int reached = 0;
 
         // Cost to each vertex
@@ -52,30 +52,29 @@ extern "C" {
         gamma = 1 + pow(2, SPACEDIM) * (1 + 1 / SPACEDIM) *
                 rrt->getFreeArea();
         for (int i = 0; i < rrt->max_iter; i++) {
-            qNew = rrt->getRandomNode();
-            qNearest = rrt->nearest(qNew->position);
-            if (rrt->distance(qNew->position, qNearest->position) >
+            q_new = rrt->getRandomNode();
+            q_nearest = rrt->nearest(q_new->position);
+            if (rrt->distance(q_new->position, q_nearest->position) >
                 rrt->step_size) {
-                Vector2f newConfig = rrt->newConfig(qNew, qNearest);
-                if (rrt->isSegmentInObstacles(newConfig, qNearest->position)) {
+                Vector2f newConfig = rrt->newConfig(q_new, q_nearest);
+                if (rrt->isSegmentInObstacles(newConfig, q_nearest->position)) {
                     continue;
                 }
-                qNew = new Node;
-                qNew->position = newConfig;
+                q_new = new Node(newConfig);
             }
 
-            rrt->nearestNeighbors(qNew->position);
-            qBest = qNearest;
-            distBest = rrt->distance(qNew->position, qNearest->position);
+            rrt->nearestNeighbors(q_new->position);
+            q_best = q_nearest;
+            dist_best = rrt->distance(q_new->position, q_nearest->position);
             radius = min(
                 pow(gamma / PI * log(i + 1) / (i + 1), 1 / SPACEDIM),
                 (double) rrt->step_size
             );
 
-            // look for shortest cost path to qNew
+            // look for shortest cost path to q_new
             for (auto node : rrt->nodes) {
-                // compute the cost for qNew through node
-                dist = rrt->distance(qNew->position, node->position);
+                // compute the cost for q_new through node
+                dist = rrt->distance(q_new->position, node->position);
                 cost = cost_map[node] + dist;
 
                 // only consider proximal nodes
@@ -84,25 +83,25 @@ extern "C" {
                 }
 
                 // if cost less than current lowest cost, check potential link
-                if (cost < cost_map[qBest] + distBest) {
-                    if (rrt->isSegmentInObstacles(qNew->position,
+                if (cost < cost_map[q_best] + dist_best) {
+                    if (rrt->isSegmentInObstacles(q_new->position,
                                                   node->position)) {
                         continue;
                     }
-                    qBest = node;
-                    distBest = dist;
+                    q_best = node;
+                    dist_best = dist;
                 }
             }
 
-            if (rrt->isSegmentInObstacles(qNew->position, qBest->position)) {
+            if (rrt->isSegmentInObstacles(q_new->position, q_best->position)) {
                 continue;
             }
-            rrt->add(qBest, qNew, distBest);
-            cost_map[qNew] = cost_map[qBest] + distBest;
+            rrt->add(q_best, q_new, dist_best);
+            cost_map[q_new] = cost_map[q_best] + dist_best;
 
             // rewire the tree
             for (auto node : rrt->nodes) {
-                dist = rrt->distance(qNew->position, node->position);
+                dist = rrt->distance(q_new->position, node->position);
                 cost = cost_map[node] + dist;
 
                 // only consider proximal nodes
@@ -112,11 +111,11 @@ extern "C" {
 
                 // if cost less than current lowest cost, check potential link
                 if (cost < cost_map[node]) {
-                    if (rrt->isSegmentInObstacles(qNew->position,
+                    if (rrt->isSegmentInObstacles(q_new->position,
                                                   node->position)) {
                         continue;
                     }
-                    rrt->relink(node, qNew, dist);
+                    rrt->relink(node, q_new, dist);
                     cost_map[node] = cost;
                 }
             }
@@ -147,12 +146,12 @@ extern "C" {
         int index = 0;
         reverse(rrt->path.begin(), rrt->path.end());
         for (auto node : rrt->path) {
-            xPath[index] = node->position[0];
-            yPath[index] = node->position[1];
+            x_path[index] = node->position[0];
+            y_path[index] = node->position[1];
             index += 1;
         }
-        xPath[index] = NAN;
-        yPath[index] = NAN;
+        x_path[index] = NAN;
+        y_path[index] = NAN;
 
         // free the memory
         rrt->reset();

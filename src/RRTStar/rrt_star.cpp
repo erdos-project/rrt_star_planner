@@ -23,9 +23,8 @@ RRT::~RRT()
  */
 void RRT::initialize()
 {
-    root = new Node;
+    root = new Node(start_pos);
     root->parent = nullptr;
-    root->position = start_pos;
     last_node = root;
     nodes.push_back(root);
 }
@@ -104,13 +103,11 @@ Node* RRT::getRandomNode()
     // Try to connect with the end occasionally
     Node* ret;
     if (drand48() <= 0.1) {
-        ret = new Node;
-        ret->position = end_pos;
+        ret = new Node(end_pos);
     } else {
         Vector2f point(drand48() * bounds.x(),
                        drand48() * bounds.y());
-        ret = new Node;
-        ret->position = point + origin;
+        ret = new Node(point + origin);
     }
     return ret;
 }
