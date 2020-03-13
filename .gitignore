@@ -1,0 +1,7 @@
+*.pyc
+
+build/
+cmake-build-debug/
+venv/
+bin/
+.idea/
