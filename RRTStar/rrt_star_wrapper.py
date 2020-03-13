@@ -8,7 +8,7 @@ try:
     cdll = ctypes.CDLL("build/libRRTStar.so")
 except:
     cdll = ctypes.CDLL(
-        "{}/pylot/planning/rrt_star/rrt-star-planning/"
+        "{}/pylot/planning/rrt_star/rrt_star_planning/"
         "build/libRRTStar.so".format(os.getcwd())
     )
 _c_double_p = ctypes.POINTER(c_double)
