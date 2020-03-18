@@ -101,9 +101,9 @@ extern "C" {
 
         // Construct obstacles
         vector<double> llx (obstacles_llx, obstacles_llx + numObstacles);
-        vector<double> lly (obstacles_llx, obstacles_llx + numObstacles);
-        vector<double> urx (obstacles_llx, obstacles_llx + numObstacles);
-        vector<double> ury (obstacles_llx, obstacles_llx + numObstacles);
+        vector<double> lly (obstacles_lly, obstacles_lly + numObstacles);
+        vector<double> urx (obstacles_urx, obstacles_urx + numObstacles);
+        vector<double> ury (obstacles_ury, obstacles_ury + numObstacles);
 
         for (int i = 0; i < numObstacles; i++) {
             rrt->addObstacle(
