@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <eigen3/Eigen/Dense>
+#include <vector>
 #include <map>
 
 double SPACEDIM = 2.0;
@@ -99,10 +100,15 @@ extern "C" {
                 max_iterations);
 
         // Construct obstacles
+        vector<double> llx (obstacles_llx, obstacles_llx + numObstacles);
+        vector<double> lly (obstacles_llx, obstacles_llx + numObstacles);
+        vector<double> urx (obstacles_llx, obstacles_llx + numObstacles);
+        vector<double> ury (obstacles_llx, obstacles_llx + numObstacles);
+
         for (int i = 0; i < numObstacles; i++) {
             rrt->addObstacle(
-                    Vector2f(obstacles_llx[i], obstacles_lly[i]),
-                    Vector2f(obstacles_urx[i], obstacles_ury[i])
+                    Vector2f(llx[i], lly[i]),
+                    Vector2f(urx[i], ury[i])
             );
         }
 
