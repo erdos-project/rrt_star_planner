@@ -39,13 +39,19 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
     """
     result_x = np.zeros(100)
     result_y = np.zeros(100)
+
+    llx = np.copy(obs[:, 0])
+    lly = np.copy(obs[:, 1])
+    urx = np.copy(obs[:, 2])
+    ury = np.copy(obs[:, 3])
+
     success = _apply_rrt_star(
         c_double(start[0]), c_double(start[1]), c_double(end[0]),
         c_double(end[1]), c_double(step_size), c_int(max_iterations),
-        obs[:, 0].ctypes.data_as(_c_double_p),
-        obs[:, 1].ctypes.data_as(_c_double_p),
-        obs[:, 2].ctypes.data_as(_c_double_p),
-        obs[:, 3].ctypes.data_as(_c_double_p),
+        llx.ctypes.data_as(_c_double_p),
+        lly.ctypes.data_as(_c_double_p),
+        urx.ctypes.data_as(_c_double_p),
+        ury.ctypes.data_as(_c_double_p),
         c_int(obs.shape[0]),
         result_x.ctypes.data_as(_c_double_p),
         result_y.ctypes.data_as(_c_double_p),
@@ -55,4 +61,4 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
     if success and np.any(np.isnan(result_x)):
         ind = np.where(np.isnan(result_x))[0][0]
 
-    return (success, (result_x[:ind], result_y[:ind]))
+    return success, (result_x[:ind], result_y[:ind])
