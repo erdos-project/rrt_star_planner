@@ -40,10 +40,10 @@ def apply_rrt_star(start, end, step_size, max_iterations, obs):
     result_x = np.zeros(100)
     result_y = np.zeros(100)
 
-    llx = np.copy(obs[:, 0])
-    lly = np.copy(obs[:, 1])
-    urx = np.copy(obs[:, 2])
-    ury = np.copy(obs[:, 3])
+    llx = np.copy(obs[:, 0]).astype(np.float64)
+    lly = np.copy(obs[:, 1]).astype(np.float64)
+    urx = np.copy(obs[:, 2]).astype(np.float64)
+    ury = np.copy(obs[:, 3]).astype(np.float64)
 
     success = _apply_rrt_star(
         c_double(start[0]), c_double(start[1]), c_double(end[0]),

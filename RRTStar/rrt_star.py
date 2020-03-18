@@ -13,35 +13,35 @@ def main():
     path is not found.
     """
     print(__file__ + " start!!")
-    sim_loop = 50
+    sim_loop = 100
     area = 20.0  # animation area length [m]
     show_animation = True
 
-    conds = {'wx': [150.0],
-             'wy': [195.0],
-             'obstacle_list': [10 * [134., 194., 136., 196.]],
-             'x': 120.0,
-             'y': 195.0,
-             }  # paste output from debug log
+    conds = {
+        'start': [150, 60],
+         'end': [170, 60],
+        'obstacles': [
+            [158, 57,
+             162, 63]
+        ],
+        'step_size': 0.5,
+        'max_iterations': 2000
+    }  # paste output from debug log
 
-    # way points
-    wx = np.array(conds['wx'])
-    wy = np.array(conds['wy'])
-    wp = np.array([wx, wy]).T
+    start = conds['start']
+    end = conds['end']
+    max_iterations = conds['max_iterations']
+    step_size = conds['step_size']
+    obs = np.array(conds['obstacles'])
 
-    # initial conditions
-    x = conds['x']
-    y = conds['y']
-
-    # obstacle lists
-    obs = np.array(conds['obstacle_list'])
     total_time_taken = 0
+    x, y = start
     for i in range(sim_loop):
         print("Iteration: {}".format(i))
         start_time = time.time()
         success, (result_x, result_y) = \
-            rrt_star_wrapper.apply_rrt_star([x, y], wp[-1], 1,
-                                           2000, obs)
+            rrt_star_wrapper.apply_rrt_star([x, y], end, step_size,
+                                            max_iterations, obs)
         if success == 1:
             x = result_x[1]
             y = result_y[1]
@@ -51,7 +51,7 @@ def main():
         total_time_taken += end_time
         print("Time taken: {}".format(end_time))
 
-        if np.hypot(result_x[1] - wx[-1], result_y[1] - wy[-1]) <= 2.0:
+        if np.hypot(x - end[0], y - end[1]) <= 1.0:
             print("Goal")
             break
 
@@ -63,15 +63,18 @@ def main():
                 lambda event: [exit(0) if event.key == 'escape' else None]
             )
             ax = plt.gca()
-            rect = patch.Rectangle((obs[0, 0], obs[0, 1]),
-                                   obs[0, 2] - obs[0, 0], obs[0, 3] - obs[0, 1])
-            ax.add_patch(rect)
-            plt.plot(wp[:, 0], wp[:, 1])
-            plt.plot(result_x[1:], result_y[1:], ".r")
-            plt.plot(result_x[1], result_y[1], "vc")
-            plt.plot(wp[-1, 0], wp[-1, 1], "og")
-            plt.xlim(result_x[1] - area, result_x[1] + area)
-            plt.ylim(result_y[1] - area, result_y[1] + area)
+            for o in obs:
+                rect = patch.Rectangle((o[0], o[1]),
+                                       o[2] - o[0],
+                                       o[3] - o[1])
+                ax.add_patch(rect)
+            plt.plot(start[0], start[1], "og")
+            plt.plot(end[0], end[1], "or")
+            if success:
+                plt.plot(result_x[1:], result_y[1:], ".r")
+                plt.plot(result_x[1], result_y[1], "vc")
+                plt.xlim(result_x[1] - area, result_x[1] + area)
+                plt.ylim(result_y[1] - area, result_y[1] + area)
             plt.xlabel("X axis")
             plt.ylabel("Y axis")
             plt.grid(True)
