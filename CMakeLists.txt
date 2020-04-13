@@ -23,5 +23,5 @@ include_directories(
   ${CUSTOM_EIGEN}
 )
 add_library(RRTStar SHARED src/RRTStar/rrt_star.cpp
-        src/RRTStar/RRTStarWrapper.cpp src/RRTStar/obstacle.cpp src/RRTStar/obstacle.h)
+        src/RRTStar/RRTStarWrapper.cpp src/RRTStar/obstacle.cpp src/RRTStar/obstacle.h src/RRTStar/py_cpp_struct.h)
 target_link_libraries(RRTStar Qt5::Widgets Qt5::Gui)

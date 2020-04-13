@@ -5,13 +5,16 @@
 #include <utility>
 #include <vector>
 
-RRT::RRT(double x_start, double y_start, double x_end, double y_end,
-         double step_dist, int max_iterations)
+RRT::RRT(RRTStarInitialConditions *rrts_ic_, RRTStarHyperparameters *rrts_hp_)
 {
-    setStateSpace(x_start, y_start, x_end, y_end);
+    rrts_ic = rrts_ic_;
+    rrts_hp = rrts_hp_;
+    setStateSpace(rrts_ic->x_start, rrts_ic->y_start, rrts_ic->x_end,
+                  rrts_ic->y_end);
+    setObstacles();
     initialize();
-    step_size = step_dist;
-    max_iter = max_iterations;
+    setStepSize(rrts_hp->step_size);
+    setMaxIterations(rrts_hp->max_iterations);
 }
 
 RRT::~RRT()
@@ -58,11 +61,11 @@ void RRT::setStateSpace(double x_start, double y_start, double x_end, double y_e
     setStartPosition(x_start, y_start);
     setEndPosition(x_end, y_end);
     // State space calculated as minimum bounding rectangle with buffer
-    // origin is lower left corner, bounds is width, heigh
-    origin.x() = min(start_pos.x(), end_pos.x()) - LANE_WIDTH;
-    origin.y() = min(start_pos.y(), end_pos.y()) - LANE_WIDTH;
-    bounds.x() = max(start_pos.x(), end_pos.x()) - origin.x() + LANE_WIDTH;
-    bounds.y() = max(start_pos.y(), end_pos.y()) - origin.y() + LANE_WIDTH;
+    // origin is lower left corner, bounds is width, height
+    origin.x() = min(start_pos.x(), end_pos.x()) - rrts_hp->lane_width;
+    origin.y() = min(start_pos.y(), end_pos.y()) - rrts_hp->lane_width;
+    bounds.x() = max(start_pos.x(), end_pos.x()) - origin.x() + rrts_hp->lane_width;
+    bounds.y() = max(start_pos.y(), end_pos.y()) - origin.y() + rrts_hp->lane_width;
 }
 
 void RRT::setEndPosition(double x, double y) {
@@ -70,9 +73,24 @@ void RRT::setEndPosition(double x, double y) {
     end_pos.y() = y;
 }
 
+void RRT::setObstacles() {
+    // Construct obstacles
+    vector<double> llx (rrts_ic->o_llx, rrts_ic->o_llx + rrts_ic->no);
+    vector<double> lly (rrts_ic->o_lly, rrts_ic->o_lly + rrts_ic->no);
+    vector<double> urx (rrts_ic->o_urx, rrts_ic->o_urx + rrts_ic->no);
+    vector<double> ury (rrts_ic->o_ury, rrts_ic->o_ury + rrts_ic->no);
+
+    for (int i = 0; i < rrts_ic->no; i++) {
+        addObstacle(
+            Vector2f(llx[i], lly[i]),
+            Vector2f(urx[i], ury[i])
+        );
+    }
+}
+
 void RRT::addObstacle(Vector2f first_point, Vector2f second_point) {
     obstacles.push_back(new Obstacle(std::move(first_point),
-        std::move(second_point)));
+        std::move(second_point), rrts_hp->obstacle_clearance));
 }
 
 /**
@@ -157,7 +175,9 @@ double RRT::distance(Vector2f &p, Vector2f &q)
  */
 bool RRT::isSegmentInObstacles(Vector2f &p1, Vector2f &p2) {
     for (auto obstacle : obstacles) {
-        if (obstacle->isSegmentInObstacle(p1, p2)) return true;
+        if (obstacle->isSegmentInObstacle(p1, p2)) {
+            return true;
+        }
     }
     return false;
 }
@@ -234,6 +254,6 @@ void RRT::relink(Node *q, Node *q_new, double dist)
  */
 bool RRT::reached()
 {
-    return distance(last_node->position, end_pos) < END_DIST_THRESHOLD;
+    return distance(last_node->position, end_pos) < rrts_hp->end_dist_threshold;
 }
 

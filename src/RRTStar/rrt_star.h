@@ -1,11 +1,12 @@
 #ifndef RRT_H
 #define RRT_H
 
+#include "py_cpp_struct.h"
+#include "obstacle.h"
+
 #include <cstdlib>
 #include <vector>
 #include <cmath>
-
-#include "obstacle.h"
 
 using namespace std;
 using namespace Eigen;
@@ -28,10 +29,11 @@ public:
     vector<Node *> path;
     Node *root, *last_node;
     Vector2f start_pos, end_pos, origin, bounds;
+    RRTStarInitialConditions *rrts_ic;
+    RRTStarHyperparameters *rrts_hp;
     int max_iter;
     double step_size;
-    RRT(double x_start, double y_start, double x_end, double y_end,
-        double step_dist, int max_iterations);
+    RRT(RRTStarInitialConditions *rrts_ic_, RRTStarHyperparameters *rrts_hp_);
     ~RRT();
     void initialize();
     void setStepSize(int step);
@@ -39,6 +41,7 @@ public:
     void setStartPosition(double x, double y);
     void setEndPosition(double x, double y);
     void setStateSpace(double x_start, double y_start, double x_end, double y_end);
+    void setObstacles();
     void addObstacle(Vector2f first_point, Vector2f second_point);
     Node* getRandomNode();
     Node* nearest(Vector2f point);
