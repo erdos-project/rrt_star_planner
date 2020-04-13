@@ -12,46 +12,50 @@ def main():
     standalone simulation and visualize the results or raise an error if a
     path is not found.
     """
-    print(__file__ + " start!!")
+    conds = {
+        'start': [140, 60],
+        'end': [180, 60],
+        'obstacles': [
+            [158, 58, 162, 62]
+        ],
+    }  # paste output from debug log
+
+    initial_conditions = {
+        'start': np.array(conds['start']),
+        'end': np.array(conds['end']),
+        'obs': np.array(conds['obstacles'])
+    }
+
+    hyperparameters = {
+        "step_size": 1.0,
+        "max_iterations": 2000,
+        "end_dist_threshold": 1.0,
+        "obstacle_clearance": 1.0,
+        "lane_width": 4.0,
+    }
+
+    end = conds['end']
+
+    # simulation config
     sim_loop = 100
     area = 20.0  # animation area length [m]
     show_animation = True
-
-    conds = {
-        'start': [150, 60],
-         'end': [170, 60],
-        'obstacles': [
-            [158, 57,
-             162, 63]
-        ],
-        'step_size': 0.5,
-        'max_iterations': 2000
-    }  # paste output from debug log
-
-    start = conds['start']
-    end = conds['end']
-    max_iterations = conds['max_iterations']
-    step_size = conds['step_size']
-    obs = np.array(conds['obstacles'])
-
-    total_time_taken = 0
-    x, y = start
+    total_time = 0
     for i in range(sim_loop):
         print("Iteration: {}".format(i))
         start_time = time.time()
-        success, (result_x, result_y) = \
-            rrt_star_wrapper.apply_rrt_star([x, y], end, step_size,
-                                            max_iterations, obs)
-        if success == 1:
-            x = result_x[1]
-            y = result_y[1]
-        else:
-            print("Failed")
+        result_x, result_y, success = \
+            rrt_star_wrapper.apply_rrt_star(initial_conditions, hyperparameters)
         end_time = time.time() - start_time
-        total_time_taken += end_time
         print("Time taken: {}".format(end_time))
+        total_time += end_time
 
-        if np.hypot(x - end[0], y - end[1]) <= 1.0:
+        if success:
+            initial_conditions['start'] = np.array([result_x[1], result_y[1]])
+        else:
+            print("Failed unexpectedly")
+
+        if np.hypot(result_x[1] - end[0], result_y[1] - end[1]) <= 1.0:
             print("Goal")
             break
 
@@ -63,12 +67,12 @@ def main():
                 lambda event: [exit(0) if event.key == 'escape' else None]
             )
             ax = plt.gca()
-            for o in obs:
+            for o in initial_conditions['obs']:
                 rect = patch.Rectangle((o[0], o[1]),
                                        o[2] - o[0],
                                        o[3] - o[1])
                 ax.add_patch(rect)
-            plt.plot(start[0], start[1], "og")
+            plt.plot(result_x[1], result_y[1], "og")
             plt.plot(end[0], end[1], "or")
             if success:
                 plt.plot(result_x[1:], result_y[1:], ".r")
@@ -81,7 +85,7 @@ def main():
             plt.pause(0.1)
 
     print("Finish")
-    print("Average time per iteration: {}".format(total_time_taken/i))
+    print("Average time per iteration: {}".format(total_time/i))
     if show_animation:  # pragma: no cover
         plt.grid(True)
         plt.pause(1)

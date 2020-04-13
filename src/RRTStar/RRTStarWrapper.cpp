@@ -1,4 +1,5 @@
 #include "src/RRTStar/rrt_star.h"
+#include "src/RRTStar/py_cpp_struct.h"
 
 #include <algorithm>
 #include <eigen3/Eigen/Dense>
@@ -91,31 +92,14 @@ extern "C" {
     // Returns:
     //      x_path: list to store x path
     //      y_path: list to store y path
-    int ApplyRRTStar(double x_start, double y_start, double x_end, double y_end,
-                     double step_size, int max_iterations, double* obstacles_llx,
-                     double* obstacles_lly, double* obstacles_urx, double* obstacles_ury,
-                     int numObstacles, double* x_path, double* y_path)
+    void ApplyRRTStar(RRTStarInitialConditions *rrts_ic,
+        RRTStarHyperparameters *rrts_hp, RRTStarReturnValues *rrts_rv)
     {
-        RRT* rrt = new RRT(x_start, y_start, x_end, y_end, step_size,
-                max_iterations);
-
-        // Construct obstacles
-        vector<double> llx (obstacles_llx, obstacles_llx + numObstacles);
-        vector<double> lly (obstacles_lly, obstacles_lly + numObstacles);
-        vector<double> urx (obstacles_urx, obstacles_urx + numObstacles);
-        vector<double> ury (obstacles_ury, obstacles_ury + numObstacles);
-
-        for (int i = 0; i < numObstacles; i++) {
-            rrt->addObstacle(
-                    Vector2f(llx[i], lly[i]),
-                    Vector2f(urx[i], ury[i])
-            );
-        }
+        RRT* rrt = new RRT(rrts_ic, rrts_hp);
 
         // Declare variables
         Node *q_best, *q_new, *q_nearest;
         double dist_best, gamma, radius;
-        int reached = 0;
 
         // Cost to each vertex
         map<Node *, double> cost_map;
@@ -124,10 +108,13 @@ extern "C" {
         // Run RRT*
         gamma = 1 + pow(2, SPACEDIM) * (1 + 1 / SPACEDIM) *
                 rrt->getFreeArea();
+
         for (int i = 0; i < rrt->max_iter; i++) {
             // get a random node within the step_size radius of existing node
             q_new = getRandomNodeWithinRadius(rrt);
+
             if (q_new == nullptr) continue;
+
             q_nearest = rrt->nearest(q_new->position);
 
             // find nearest neighbors within radius of new node
@@ -156,13 +143,13 @@ extern "C" {
 
             // early exit
             if (rrt->reached()) {
-                reached = 1;
+                rrts_rv->success = 1;
                 break;
             }
         }
         Node *q;
 
-        if (reached) {
+        if (rrts_rv->success) {
             q = rrt->last_node;
         }
         else
@@ -181,15 +168,14 @@ extern "C" {
         int index = 0;
         reverse(rrt->path.begin(), rrt->path.end());
         for (auto node : rrt->path) {
-            x_path[index] = node->position[0];
-            y_path[index] = node->position[1];
+            rrts_rv->x_path[index] = node->position[0];
+            rrts_rv->y_path[index] = node->position[1];
             index += 1;
         }
-        x_path[index] = NAN;
-        y_path[index] = NAN;
+        rrts_rv->x_path[index] = NAN;
+        rrts_rv->y_path[index] = NAN;
 
         // free the memory
         delete rrt;
-        return reached;
     }
 }

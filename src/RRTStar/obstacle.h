@@ -3,11 +3,9 @@
 
 #include <eigen3/Eigen/Dense>
 
-#include "src/constants.h"
-
 class Obstacle {
 public:
-    Obstacle(Eigen::Vector2f first_point, Eigen::Vector2f second_point);
+    Obstacle(Eigen::Vector2f first_point, Eigen::Vector2f second_point, double obstacle_clearance);
     bool isSegmentInObstacle(Eigen::Vector2f &p1, Eigen::Vector2f &p2);
     double getArea();
 private:
