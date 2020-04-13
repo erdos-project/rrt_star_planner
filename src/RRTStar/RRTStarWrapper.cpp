@@ -6,8 +6,6 @@
 #include <vector>
 #include <map>
 
-#include <iostream>
-
 double SPACEDIM = 2.0;
 double PI = 3.14159;
 
