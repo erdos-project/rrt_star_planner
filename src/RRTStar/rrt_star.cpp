@@ -42,7 +42,7 @@ void RRT::initialize()
     nodes.push_back(root);
 }
 
-void RRT::setStepSize(int step)
+void RRT::setStepSize(double step)
 {
     step_size = step;
 }

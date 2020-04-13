@@ -13,13 +13,11 @@ def main():
     path is not found.
     """
     conds = {
-        'start': [150, 60],
-        'end': [170, 60],
+        'start': [140, 60],
+        'end': [180, 60],
         'obstacles': [
-            [158, 57, 162, 63]
+            [158, 58, 162, 62]
         ],
-        'step_size': 0.5,
-        'max_iterations': 2000
     }  # paste output from debug log
 
     initial_conditions = {
@@ -29,11 +27,11 @@ def main():
     }
 
     hyperparameters = {
-        "step_size": 0.5,
+        "step_size": 1.0,
         "max_iterations": 2000,
         "end_dist_threshold": 1.0,
         "obstacle_clearance": 1.0,
-        "lane_width": 5.0,
+        "lane_width": 4.0,
     }
 
     end = conds['end']
@@ -56,7 +54,6 @@ def main():
             initial_conditions['start'] = np.array([result_x[1], result_y[1]])
         else:
             print("Failed unexpectedly")
-
 
         if np.hypot(result_x[1] - end[0], result_y[1] - end[1]) <= 1.0:
             print("Goal")

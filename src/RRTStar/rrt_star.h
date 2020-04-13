@@ -36,7 +36,7 @@ public:
     RRT(RRTStarInitialConditions *rrts_ic_, RRTStarHyperparameters *rrts_hp_);
     ~RRT();
     void initialize();
-    void setStepSize(int step);
+    void setStepSize(double step);
     void setMaxIterations(int iter);
     void setStartPosition(double x, double y);
     void setEndPosition(double x, double y);

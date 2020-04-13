@@ -97,30 +97,26 @@ extern "C" {
     void ApplyRRTStar(RRTStarInitialConditions *rrts_ic,
         RRTStarHyperparameters *rrts_hp, RRTStarReturnValues *rrts_rv)
     {
-        cout << "here1\n";
         RRT* rrt = new RRT(rrts_ic, rrts_hp);
-        cout << "here2\n";
 
         // Declare variables
         Node *q_best, *q_new, *q_nearest;
         double dist_best, gamma, radius;
-        int reached = 0;
-        cout << "here3\n";
 
         // Cost to each vertex
         map<Node *, double> cost_map;
         cost_map[rrt->root] = 0;
-        cout << "here4\n";
 
         // Run RRT*
         gamma = 1 + pow(2, SPACEDIM) * (1 + 1 / SPACEDIM) *
                 rrt->getFreeArea();
-        cout << "here5\n";
 
         for (int i = 0; i < rrt->max_iter; i++) {
             // get a random node within the step_size radius of existing node
             q_new = getRandomNodeWithinRadius(rrt);
+
             if (q_new == nullptr) continue;
+
             q_nearest = rrt->nearest(q_new->position);
 
             // find nearest neighbors within radius of new node
@@ -149,13 +145,13 @@ extern "C" {
 
             // early exit
             if (rrt->reached()) {
-                reached = 1;
+                rrts_rv->success = 1;
                 break;
             }
         }
         Node *q;
 
-        if (reached) {
+        if (rrts_rv->success) {
             q = rrt->last_node;
         }
         else

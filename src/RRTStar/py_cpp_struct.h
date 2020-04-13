@@ -7,10 +7,10 @@ struct RRTStarInitialConditions {
     double y_start;
     double x_end;
     double y_end;
-    double o_llx;
-    double o_lly;
-    double o_urx;
-    double o_ury;
+    double *o_llx;
+    double *o_lly;
+    double *o_urx;
+    double *o_ury;
     int no;
 };
 

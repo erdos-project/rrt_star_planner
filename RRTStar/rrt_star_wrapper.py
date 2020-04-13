@@ -61,19 +61,23 @@ def apply_rrt_star(initial_conditions, hyperparameters):
     # intiialize return values
     rrts_rv = RRTStarReturnValues(0)
 
-    success = _apply_rrt_star(rrts_ic, rrts_hp, rrts_rv)
+    _apply_rrt_star(rrts_ic, rrts_hp, rrts_rv)
+
+    success = rrts_rv.success
+    x_path = np.array([rrts_rv.x_path[i] for i in range(MAX_PATH_LENGTH)])
+    y_path = np.array([rrts_rv.y_path[i] for i in range(MAX_PATH_LENGTH)])
 
     ind = -1
-    if success and np.any(np.isnan(result_x)):
-        ind = np.where(np.isnan(result_x))[0][0]
+    if success and np.any(np.isnan(x_path)):
+        ind = np.where(np.isnan(x_path))[0][0]
 
     return x_path[:ind], y_path[:ind], success
 
 def to_rrtstar_initial_conditions(initial_conditions):
     x_start = initial_conditions['start'][0]
     y_start = initial_conditions['start'][1]
-    x_end = initial_conditions['start'][0]
-    y_end = initial_conditions['start'][1]
+    x_end = initial_conditions['end'][0]
+    y_end = initial_conditions['end'][1]
     obs = initial_conditions['obs']
     o_llx = np.copy(obs[:, 0]).astype(np.float64)
     o_lly = np.copy(obs[:, 1]).astype(np.float64)
