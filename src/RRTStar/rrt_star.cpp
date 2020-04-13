@@ -113,7 +113,7 @@ Node* RRT::getRandomNode()
 {
     // Try to connect with the end occasionally
     Node* ret;
-    if (drand48() <= 0.05) {
+    if (drand48() <= 0.01) {
         ret = new Node(end_pos);
     } else {
         Vector2f point(drand48() * bounds.x(),
