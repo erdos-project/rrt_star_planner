@@ -2,7 +2,7 @@ from ctypes import c_double, c_int, POINTER, Structure, CDLL
 
 _c_double_p = POINTER(c_double)
 
-MAX_PATH_LENGTH = 100
+MAX_PATH_LENGTH = 1000
 
 class RRTStarInitialConditions(Structure):
     _fields_ = [
