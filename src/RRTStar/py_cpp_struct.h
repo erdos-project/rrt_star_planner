@@ -1,6 +1,6 @@
 #ifndef RRTSTAR_PY_CPP_STRUCT_H
 #define RRTSTAR_PY_CPP_STRUCT_H
-const int MAX_PATH_LENGTH = 100;
+const int MAX_PATH_LENGTH = 1000;
 
 struct RRTStarInitialConditions {
     double x_start;
