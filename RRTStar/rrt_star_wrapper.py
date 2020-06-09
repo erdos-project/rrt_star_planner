@@ -14,19 +14,15 @@ except:
 try:
     cdll = CDLL("build/libRRTStar.so")
 except:
-    cdll = CDLL(
-        "{}/pylot/planning/rrt_star/rrt_star_planning/"
-        "build/libRRTStar.so".format(os.getcwd())
-    )
+    cdll = CDLL("{}/pylot/planning/rrt_star/rrt_star_planning/"
+                "build/libRRTStar.so".format(os.getenv("PYLOT_HOME")))
 _c_double_p = POINTER(c_double)
 
 # func / return type declarations for C++ ApplyRRTStar
 _apply_rrt_star = cdll.ApplyRRTStar
-_apply_rrt_star.argtypes = (
-    POINTER(RRTStarInitialConditions),
-    POINTER(RRTStarHyperparameters),
-    POINTER(RRTStarReturnValues)
-)
+_apply_rrt_star.argtypes = (POINTER(RRTStarInitialConditions),
+                            POINTER(RRTStarHyperparameters),
+                            POINTER(RRTStarReturnValues))
 _apply_rrt_star.restype = None
 
 
@@ -73,6 +69,7 @@ def apply_rrt_star(initial_conditions, hyperparameters):
 
     return x_path[:ind], y_path[:ind], success
 
+
 def to_rrtstar_initial_conditions(initial_conditions):
     x_start = initial_conditions['start'][0]
     y_start = initial_conditions['start'][1]
@@ -88,12 +85,12 @@ def to_rrtstar_initial_conditions(initial_conditions):
         y_start,
         x_end,
         y_end,
-        o_llx.ctypes.data_as(_c_double_p), # obstacles lower left x
-        o_lly.ctypes.data_as(_c_double_p), # obstacles lower left y
-        o_urx.ctypes.data_as(_c_double_p), # obstacles upper right x
-        o_ury.ctypes.data_as(_c_double_p), # obstacles upper right y
-        len(obs)
-    )
+        o_llx.ctypes.data_as(_c_double_p),  # obstacles lower left x
+        o_lly.ctypes.data_as(_c_double_p),  # obstacles lower left y
+        o_urx.ctypes.data_as(_c_double_p),  # obstacles upper right x
+        o_ury.ctypes.data_as(_c_double_p),  # obstacles upper right y
+        len(obs))
+
 
 def _parse_hyperparameters(hp):
     return RRTStarHyperparameters(
