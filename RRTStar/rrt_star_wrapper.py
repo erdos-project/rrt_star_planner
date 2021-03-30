@@ -1,3 +1,4 @@
+import ctypes
 import numpy as np
 import os
 
@@ -7,14 +8,14 @@ try:
     from py_cpp_struct import RRTStarInitialConditions, RRTStarHyperparameters,\
         RRTStarReturnValues, MAX_PATH_LENGTH
 except:
-    from pylot.planning.rrt_star.rrt_star_planning.RRTStar.py_cpp_struct \
+    from rrt_star_planner.RRTStar.py_cpp_struct \
         import RRTStarInitialConditions, RRTStarHyperparameters, \
         RRTStarReturnValues, MAX_PATH_LENGTH
 
 try:
     cdll = CDLL("build/libRRTStar.so")
 except:
-    cdll = CDLL("{}/pylot/planning/rrt_star/rrt_star_planning/"
+    cdll = CDLL("{}/dependencies/rrt_star_planner/"
                 "build/libRRTStar.so".format(os.getenv("PYLOT_HOME")))
 _c_double_p = POINTER(c_double)
 
