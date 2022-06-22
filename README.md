@@ -30,5 +30,5 @@ There is a Python wrapper and C++ API. The Python wrapper is located in
 The following command will simulate a simple scenario to run the RRT* planning 
 algorithm.
 ```
-python3 RRTStar/rrtstar.py
+python3 RRTStar/rrt_star.py
 ```
